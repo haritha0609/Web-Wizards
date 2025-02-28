@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing Filters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            background:white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            background: rgba(42, 62, 80, 0.8);
+            padding: 200px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .control {
+            background: #274c9b;
+            color: white;
+            border-radius: 5px;
+            padding: 8px;
+            text-align: center;
+            width: 200px;
+        }
+        
+        input[type="range"], input[type="text"] {
+            width: 150px;
+            color: white;
+            font-weight: bold;
+            background: #274c9b;
+            border: none;
+            padding: 5px;
+            text-align: center;
+        }
+        
+        #error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="font-family: 'Arial', monospace; color: white; text-align: center;">Image Processing Tool</h2>
+        <input type="text" id="image-url" placeholder="Paste image URL here">
+        <button onclick="loadImage()">Load Image</button>
+        <p id="error-message">Error: Unable to load image. Please check the URL.</p>
+        <div id="image-container">
+            <img id="uploaded-image">
+        </div>
+        <div class="controls">
+            <div class="row">
+                <div class="control">
+                    <label>Blur:</label>
+                    <input type="range" id="blur" min="0" max="10" step="0.5" value="0">
+                </div>
+                <div class="control">
+                    <label>Grayscale:</label>
+                    <input type="checkbox" id="grayscale">
+                </div>
+            </div>
+            <div class="row">
+                <div class="control">
+                    <label>Brightness:</label>
+                    <input type="range" id="brightness" min="50" max="200" value="100">
+                </div>
+                <div class="control">
+                    <label>Contrast:</label>
+                    <input type="range" id="contrast" min="50" max="200" value="100">
+                </div>
+            </div>
+            <div class="row">
+                <div class="control">
+                    <label>Saturation:</label>
+                    <input type="range" id="saturation" min="0" max="200" value="100">
+                </div>
+                <div class="control">
+                    <label>Opacity:</label>
+                    <input type="range" id="opacity" min="0" max="1" step="0.1" value="1">
+                </div>
+            </div>
+            <div class="row">
+                <div class="control">
+                    <label>Sepia:</label>
+                    <input type="range" id="sepia" min="0" max="100" value="0">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const uploadedImage = document.getElementById("uploaded-image");
+        const errorMessage = document.getElementById("error-message");
+        
+        function loadImage() {
+            const imageUrl = document.getElementById("image-url").value;
+            if (imageUrl) {
+                uploadedImage.src = imageUrl;
+                uploadedImage.style.display = "block";
+                errorMessage.style.display = "none";
+                uploadedImage.onerror = function() {
+                    uploadedImage.style.display = "none";
+                    errorMessage.style.display = "block";
+                };
+            }
+        }
+        
+        function applyFilters() {
+            const blur = `blur(${document.getElementById("blur").value}px)`;
+            const grayscale = document.getElementById("grayscale").checked ? "grayscale(100%)" : "grayscale(0%)";
+            const brightness = `brightness(${document.getElementById("brightness").value}%)`;
+            const contrast = `contrast(${document.getElementById("contrast").value}%)`;
+            const saturation = `saturate(${document.getElementById("saturation").value}%)`;
+            const opacity = `opacity(${document.getElementById("opacity").value})`;
+            const sepia = `sepia(${document.getElementById("sepia").value}%)`;
+            
+            uploadedImage.style.filter = `${blur} ${grayscale} ${brightness} ${contrast} ${saturation} ${opacity} ${sepia}`;
+        }
+        
+        document.querySelectorAll("input[type='range'], input[type='checkbox']").forEach(input => {
+            input.addEventListener("input", applyFilters);
+        });
+    </script>
+</body>
+</html>
